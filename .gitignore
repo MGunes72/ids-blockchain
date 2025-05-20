@@ -1,3 +1,4 @@
-.env
+/cmd/middleware/.env
+/cmd/verify/.env
 /ids-contracts/.env
 /ids-contracts/node_modules/

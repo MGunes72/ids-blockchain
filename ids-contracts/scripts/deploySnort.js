@@ -1,14 +1,17 @@
-require("@nomicfoundation/hardhat-toolbox");
-require("dotenv").config(); // ⬅ Load .env
+const hre = require("hardhat");
 
-const { RPC_URL, PRIVATE_KEY } = process.env;
+async function main() {
+  await hre.run('compile');
 
-module.exports = {
-  solidity: "0.8.20",
-  networks: {
-    ganache: {
-      url: RPC_URL,
-      accounts: [PRIVATE_KEY]
-    }
-  }
-};
+  const SnortLogger = await hre.ethers.getContractFactory("SnortLogger");
+  const snortLogger = await SnortLogger.deploy();
+
+  await snortLogger.waitForDeployment();
+
+  console.log("SnortLoggger deployed to:", snortLogger.address);
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
