@@ -31,7 +31,7 @@ var (
 
 // SnortloggerMetaData contains all meta data concerning the Snortlogger contract.
 var SnortloggerMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"message\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"AlertLogged\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"alerts\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"message\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"}],\"name\":\"getAlert\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAlertCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAllTimestamps\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"message\",\"type\":\"string\"}],\"name\":\"logAlert\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"timestamps\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"hash\",\"type\":\"string\"}],\"name\":\"AlertLogged\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"alerts\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"hash\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"getAlert\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getAllIds\",\"outputs\":[{\"internalType\":\"uint256[]\",\"name\":\"\",\"type\":\"uint256[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"ids\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"hash\",\"type\":\"string\"}],\"name\":\"logAlert\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
 }
 
 // SnortloggerABI is the input ABI used to generate the binding from.
@@ -182,27 +182,24 @@ func (_Snortlogger *SnortloggerTransactorRaw) Transact(opts *bind.TransactOpts, 
 
 // Alerts is a free data retrieval call binding the contract method 0x171d073a.
 //
-// Solidity: function alerts(uint256 ) view returns(address sender, string message, uint256 timestamp)
+// Solidity: function alerts(uint256 ) view returns(address sender, string hash)
 func (_Snortlogger *SnortloggerCaller) Alerts(opts *bind.CallOpts, arg0 *big.Int) (struct {
-	Sender    common.Address
-	Message   string
-	Timestamp *big.Int
+	Sender common.Address
+	Hash   string
 }, error) {
 	var out []interface{}
 	err := _Snortlogger.contract.Call(opts, &out, "alerts", arg0)
 
 	outstruct := new(struct {
-		Sender    common.Address
-		Message   string
-		Timestamp *big.Int
+		Sender common.Address
+		Hash   string
 	})
 	if err != nil {
 		return *outstruct, err
 	}
 
 	outstruct.Sender = *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
-	outstruct.Message = *abi.ConvertType(out[1], new(string)).(*string)
-	outstruct.Timestamp = *abi.ConvertType(out[2], new(*big.Int)).(**big.Int)
+	outstruct.Hash = *abi.ConvertType(out[1], new(string)).(*string)
 
 	return *outstruct, err
 
@@ -210,96 +207,62 @@ func (_Snortlogger *SnortloggerCaller) Alerts(opts *bind.CallOpts, arg0 *big.Int
 
 // Alerts is a free data retrieval call binding the contract method 0x171d073a.
 //
-// Solidity: function alerts(uint256 ) view returns(address sender, string message, uint256 timestamp)
+// Solidity: function alerts(uint256 ) view returns(address sender, string hash)
 func (_Snortlogger *SnortloggerSession) Alerts(arg0 *big.Int) (struct {
-	Sender    common.Address
-	Message   string
-	Timestamp *big.Int
+	Sender common.Address
+	Hash   string
 }, error) {
 	return _Snortlogger.Contract.Alerts(&_Snortlogger.CallOpts, arg0)
 }
 
 // Alerts is a free data retrieval call binding the contract method 0x171d073a.
 //
-// Solidity: function alerts(uint256 ) view returns(address sender, string message, uint256 timestamp)
+// Solidity: function alerts(uint256 ) view returns(address sender, string hash)
 func (_Snortlogger *SnortloggerCallerSession) Alerts(arg0 *big.Int) (struct {
-	Sender    common.Address
-	Message   string
-	Timestamp *big.Int
+	Sender common.Address
+	Hash   string
 }, error) {
 	return _Snortlogger.Contract.Alerts(&_Snortlogger.CallOpts, arg0)
 }
 
 // GetAlert is a free data retrieval call binding the contract method 0x85081886.
 //
-// Solidity: function getAlert(uint256 timestamp) view returns(address, string, uint256)
-func (_Snortlogger *SnortloggerCaller) GetAlert(opts *bind.CallOpts, timestamp *big.Int) (common.Address, string, *big.Int, error) {
+// Solidity: function getAlert(uint256 id) view returns(address, string)
+func (_Snortlogger *SnortloggerCaller) GetAlert(opts *bind.CallOpts, id *big.Int) (common.Address, string, error) {
 	var out []interface{}
-	err := _Snortlogger.contract.Call(opts, &out, "getAlert", timestamp)
+	err := _Snortlogger.contract.Call(opts, &out, "getAlert", id)
 
 	if err != nil {
-		return *new(common.Address), *new(string), *new(*big.Int), err
+		return *new(common.Address), *new(string), err
 	}
 
 	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
 	out1 := *abi.ConvertType(out[1], new(string)).(*string)
-	out2 := *abi.ConvertType(out[2], new(*big.Int)).(**big.Int)
 
-	return out0, out1, out2, err
+	return out0, out1, err
 
 }
 
 // GetAlert is a free data retrieval call binding the contract method 0x85081886.
 //
-// Solidity: function getAlert(uint256 timestamp) view returns(address, string, uint256)
-func (_Snortlogger *SnortloggerSession) GetAlert(timestamp *big.Int) (common.Address, string, *big.Int, error) {
-	return _Snortlogger.Contract.GetAlert(&_Snortlogger.CallOpts, timestamp)
+// Solidity: function getAlert(uint256 id) view returns(address, string)
+func (_Snortlogger *SnortloggerSession) GetAlert(id *big.Int) (common.Address, string, error) {
+	return _Snortlogger.Contract.GetAlert(&_Snortlogger.CallOpts, id)
 }
 
 // GetAlert is a free data retrieval call binding the contract method 0x85081886.
 //
-// Solidity: function getAlert(uint256 timestamp) view returns(address, string, uint256)
-func (_Snortlogger *SnortloggerCallerSession) GetAlert(timestamp *big.Int) (common.Address, string, *big.Int, error) {
-	return _Snortlogger.Contract.GetAlert(&_Snortlogger.CallOpts, timestamp)
+// Solidity: function getAlert(uint256 id) view returns(address, string)
+func (_Snortlogger *SnortloggerCallerSession) GetAlert(id *big.Int) (common.Address, string, error) {
+	return _Snortlogger.Contract.GetAlert(&_Snortlogger.CallOpts, id)
 }
 
-// GetAlertCount is a free data retrieval call binding the contract method 0x40411fc8.
+// GetAllIds is a free data retrieval call binding the contract method 0xaaa44e5c.
 //
-// Solidity: function getAlertCount() view returns(uint256)
-func (_Snortlogger *SnortloggerCaller) GetAlertCount(opts *bind.CallOpts) (*big.Int, error) {
+// Solidity: function getAllIds() view returns(uint256[])
+func (_Snortlogger *SnortloggerCaller) GetAllIds(opts *bind.CallOpts) ([]*big.Int, error) {
 	var out []interface{}
-	err := _Snortlogger.contract.Call(opts, &out, "getAlertCount")
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// GetAlertCount is a free data retrieval call binding the contract method 0x40411fc8.
-//
-// Solidity: function getAlertCount() view returns(uint256)
-func (_Snortlogger *SnortloggerSession) GetAlertCount() (*big.Int, error) {
-	return _Snortlogger.Contract.GetAlertCount(&_Snortlogger.CallOpts)
-}
-
-// GetAlertCount is a free data retrieval call binding the contract method 0x40411fc8.
-//
-// Solidity: function getAlertCount() view returns(uint256)
-func (_Snortlogger *SnortloggerCallerSession) GetAlertCount() (*big.Int, error) {
-	return _Snortlogger.Contract.GetAlertCount(&_Snortlogger.CallOpts)
-}
-
-// GetAllTimestamps is a free data retrieval call binding the contract method 0x137bf69c.
-//
-// Solidity: function getAllTimestamps() view returns(uint256[])
-func (_Snortlogger *SnortloggerCaller) GetAllTimestamps(opts *bind.CallOpts) ([]*big.Int, error) {
-	var out []interface{}
-	err := _Snortlogger.contract.Call(opts, &out, "getAllTimestamps")
+	err := _Snortlogger.contract.Call(opts, &out, "getAllIds")
 
 	if err != nil {
 		return *new([]*big.Int), err
@@ -311,18 +274,49 @@ func (_Snortlogger *SnortloggerCaller) GetAllTimestamps(opts *bind.CallOpts) ([]
 
 }
 
-// GetAllTimestamps is a free data retrieval call binding the contract method 0x137bf69c.
+// GetAllIds is a free data retrieval call binding the contract method 0xaaa44e5c.
 //
-// Solidity: function getAllTimestamps() view returns(uint256[])
-func (_Snortlogger *SnortloggerSession) GetAllTimestamps() ([]*big.Int, error) {
-	return _Snortlogger.Contract.GetAllTimestamps(&_Snortlogger.CallOpts)
+// Solidity: function getAllIds() view returns(uint256[])
+func (_Snortlogger *SnortloggerSession) GetAllIds() ([]*big.Int, error) {
+	return _Snortlogger.Contract.GetAllIds(&_Snortlogger.CallOpts)
 }
 
-// GetAllTimestamps is a free data retrieval call binding the contract method 0x137bf69c.
+// GetAllIds is a free data retrieval call binding the contract method 0xaaa44e5c.
 //
-// Solidity: function getAllTimestamps() view returns(uint256[])
-func (_Snortlogger *SnortloggerCallerSession) GetAllTimestamps() ([]*big.Int, error) {
-	return _Snortlogger.Contract.GetAllTimestamps(&_Snortlogger.CallOpts)
+// Solidity: function getAllIds() view returns(uint256[])
+func (_Snortlogger *SnortloggerCallerSession) GetAllIds() ([]*big.Int, error) {
+	return _Snortlogger.Contract.GetAllIds(&_Snortlogger.CallOpts)
+}
+
+// Ids is a free data retrieval call binding the contract method 0xfac333ac.
+//
+// Solidity: function ids(uint256 ) view returns(uint256)
+func (_Snortlogger *SnortloggerCaller) Ids(opts *bind.CallOpts, arg0 *big.Int) (*big.Int, error) {
+	var out []interface{}
+	err := _Snortlogger.contract.Call(opts, &out, "ids", arg0)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// Ids is a free data retrieval call binding the contract method 0xfac333ac.
+//
+// Solidity: function ids(uint256 ) view returns(uint256)
+func (_Snortlogger *SnortloggerSession) Ids(arg0 *big.Int) (*big.Int, error) {
+	return _Snortlogger.Contract.Ids(&_Snortlogger.CallOpts, arg0)
+}
+
+// Ids is a free data retrieval call binding the contract method 0xfac333ac.
+//
+// Solidity: function ids(uint256 ) view returns(uint256)
+func (_Snortlogger *SnortloggerCallerSession) Ids(arg0 *big.Int) (*big.Int, error) {
+	return _Snortlogger.Contract.Ids(&_Snortlogger.CallOpts, arg0)
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
@@ -356,56 +350,25 @@ func (_Snortlogger *SnortloggerCallerSession) Owner() (common.Address, error) {
 	return _Snortlogger.Contract.Owner(&_Snortlogger.CallOpts)
 }
 
-// Timestamps is a free data retrieval call binding the contract method 0x8bc33af3.
+// LogAlert is a paid mutator transaction binding the contract method 0x75725fc6.
 //
-// Solidity: function timestamps(uint256 ) view returns(uint256)
-func (_Snortlogger *SnortloggerCaller) Timestamps(opts *bind.CallOpts, arg0 *big.Int) (*big.Int, error) {
-	var out []interface{}
-	err := _Snortlogger.contract.Call(opts, &out, "timestamps", arg0)
-
-	if err != nil {
-		return *new(*big.Int), err
-	}
-
-	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
-
-	return out0, err
-
-}
-
-// Timestamps is a free data retrieval call binding the contract method 0x8bc33af3.
-//
-// Solidity: function timestamps(uint256 ) view returns(uint256)
-func (_Snortlogger *SnortloggerSession) Timestamps(arg0 *big.Int) (*big.Int, error) {
-	return _Snortlogger.Contract.Timestamps(&_Snortlogger.CallOpts, arg0)
-}
-
-// Timestamps is a free data retrieval call binding the contract method 0x8bc33af3.
-//
-// Solidity: function timestamps(uint256 ) view returns(uint256)
-func (_Snortlogger *SnortloggerCallerSession) Timestamps(arg0 *big.Int) (*big.Int, error) {
-	return _Snortlogger.Contract.Timestamps(&_Snortlogger.CallOpts, arg0)
+// Solidity: function logAlert(uint256 id, string hash) returns()
+func (_Snortlogger *SnortloggerTransactor) LogAlert(opts *bind.TransactOpts, id *big.Int, hash string) (*types.Transaction, error) {
+	return _Snortlogger.contract.Transact(opts, "logAlert", id, hash)
 }
 
 // LogAlert is a paid mutator transaction binding the contract method 0x75725fc6.
 //
-// Solidity: function logAlert(uint256 timestamp, string message) returns()
-func (_Snortlogger *SnortloggerTransactor) LogAlert(opts *bind.TransactOpts, timestamp *big.Int, message string) (*types.Transaction, error) {
-	return _Snortlogger.contract.Transact(opts, "logAlert", timestamp, message)
+// Solidity: function logAlert(uint256 id, string hash) returns()
+func (_Snortlogger *SnortloggerSession) LogAlert(id *big.Int, hash string) (*types.Transaction, error) {
+	return _Snortlogger.Contract.LogAlert(&_Snortlogger.TransactOpts, id, hash)
 }
 
 // LogAlert is a paid mutator transaction binding the contract method 0x75725fc6.
 //
-// Solidity: function logAlert(uint256 timestamp, string message) returns()
-func (_Snortlogger *SnortloggerSession) LogAlert(timestamp *big.Int, message string) (*types.Transaction, error) {
-	return _Snortlogger.Contract.LogAlert(&_Snortlogger.TransactOpts, timestamp, message)
-}
-
-// LogAlert is a paid mutator transaction binding the contract method 0x75725fc6.
-//
-// Solidity: function logAlert(uint256 timestamp, string message) returns()
-func (_Snortlogger *SnortloggerTransactorSession) LogAlert(timestamp *big.Int, message string) (*types.Transaction, error) {
-	return _Snortlogger.Contract.LogAlert(&_Snortlogger.TransactOpts, timestamp, message)
+// Solidity: function logAlert(uint256 id, string hash) returns()
+func (_Snortlogger *SnortloggerTransactorSession) LogAlert(id *big.Int, hash string) (*types.Transaction, error) {
+	return _Snortlogger.Contract.LogAlert(&_Snortlogger.TransactOpts, id, hash)
 }
 
 // SnortloggerAlertLoggedIterator is returned from FilterAlertLogged and is used to iterate over the raw logs and unpacked data for AlertLogged events raised by the Snortlogger contract.
@@ -477,40 +440,30 @@ func (it *SnortloggerAlertLoggedIterator) Close() error {
 
 // SnortloggerAlertLogged represents a AlertLogged event raised by the Snortlogger contract.
 type SnortloggerAlertLogged struct {
-	Sender    common.Address
-	Message   string
-	Timestamp *big.Int
-	Raw       types.Log // Blockchain specific contextual infos
+	Id     *big.Int
+	Sender common.Address
+	Hash   string
+	Raw    types.Log // Blockchain specific contextual infos
 }
 
-// FilterAlertLogged is a free log retrieval operation binding the contract event 0xbd7e9c15f483b256ff4f405d161a793ec97782523a620ef61df31489df186562.
+// FilterAlertLogged is a free log retrieval operation binding the contract event 0x925bda36ee4169eebc888b3b593fb5f32760175c6c8e32040ff4cbd4a109a212.
 //
-// Solidity: event AlertLogged(address indexed sender, string message, uint256 timestamp)
-func (_Snortlogger *SnortloggerFilterer) FilterAlertLogged(opts *bind.FilterOpts, sender []common.Address) (*SnortloggerAlertLoggedIterator, error) {
+// Solidity: event AlertLogged(uint256 id, address sender, string hash)
+func (_Snortlogger *SnortloggerFilterer) FilterAlertLogged(opts *bind.FilterOpts) (*SnortloggerAlertLoggedIterator, error) {
 
-	var senderRule []interface{}
-	for _, senderItem := range sender {
-		senderRule = append(senderRule, senderItem)
-	}
-
-	logs, sub, err := _Snortlogger.contract.FilterLogs(opts, "AlertLogged", senderRule)
+	logs, sub, err := _Snortlogger.contract.FilterLogs(opts, "AlertLogged")
 	if err != nil {
 		return nil, err
 	}
 	return &SnortloggerAlertLoggedIterator{contract: _Snortlogger.contract, event: "AlertLogged", logs: logs, sub: sub}, nil
 }
 
-// WatchAlertLogged is a free log subscription operation binding the contract event 0xbd7e9c15f483b256ff4f405d161a793ec97782523a620ef61df31489df186562.
+// WatchAlertLogged is a free log subscription operation binding the contract event 0x925bda36ee4169eebc888b3b593fb5f32760175c6c8e32040ff4cbd4a109a212.
 //
-// Solidity: event AlertLogged(address indexed sender, string message, uint256 timestamp)
-func (_Snortlogger *SnortloggerFilterer) WatchAlertLogged(opts *bind.WatchOpts, sink chan<- *SnortloggerAlertLogged, sender []common.Address) (event.Subscription, error) {
+// Solidity: event AlertLogged(uint256 id, address sender, string hash)
+func (_Snortlogger *SnortloggerFilterer) WatchAlertLogged(opts *bind.WatchOpts, sink chan<- *SnortloggerAlertLogged) (event.Subscription, error) {
 
-	var senderRule []interface{}
-	for _, senderItem := range sender {
-		senderRule = append(senderRule, senderItem)
-	}
-
-	logs, sub, err := _Snortlogger.contract.WatchLogs(opts, "AlertLogged", senderRule)
+	logs, sub, err := _Snortlogger.contract.WatchLogs(opts, "AlertLogged")
 	if err != nil {
 		return nil, err
 	}
@@ -542,9 +495,9 @@ func (_Snortlogger *SnortloggerFilterer) WatchAlertLogged(opts *bind.WatchOpts, 
 	}), nil
 }
 
-// ParseAlertLogged is a log parse operation binding the contract event 0xbd7e9c15f483b256ff4f405d161a793ec97782523a620ef61df31489df186562.
+// ParseAlertLogged is a log parse operation binding the contract event 0x925bda36ee4169eebc888b3b593fb5f32760175c6c8e32040ff4cbd4a109a212.
 //
-// Solidity: event AlertLogged(address indexed sender, string message, uint256 timestamp)
+// Solidity: event AlertLogged(uint256 id, address sender, string hash)
 func (_Snortlogger *SnortloggerFilterer) ParseAlertLogged(log types.Log) (*SnortloggerAlertLogged, error) {
 	event := new(SnortloggerAlertLogged)
 	if err := _Snortlogger.contract.UnpackLog(event, "AlertLogged", log); err != nil {

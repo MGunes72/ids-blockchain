@@ -2,21 +2,19 @@
 pragma solidity ^0.8.0;
 
 contract SnortLogger {
-    event AlertLogged(address indexed sender, string message, uint256 timestamp);
+    event AlertLogged(uint256 id, address sender, string hash);
 
     struct Alert {
         address sender;
-        string message;
-        uint256 timestamp;
+        string hash;
     }
 
+    mapping(uint256 => Alert) public alerts;
+    uint256[] public ids;
     address public owner;
 
-    mapping(uint256 => Alert) public alerts; // timestamp => Alert
-    uint256[] public timestamps;
-
     modifier onlyOwner() {
-        require(msg.sender == owner, "Only contract owner can call this");
+        require(msg.sender == owner, "Only contract owner can log alerts");
         _;
     }
 
@@ -24,24 +22,19 @@ contract SnortLogger {
         owner = msg.sender;
     }
 
-    function logAlert(uint256 timestamp, string memory message) public onlyOwner {
-        require(alerts[timestamp].timestamp == 0, "Alert with this timestamp already exists");
-        alerts[timestamp] = Alert(msg.sender, message, timestamp);
-        timestamps.push(timestamp);
-        emit AlertLogged(msg.sender, message, timestamp);
+    function logAlert(uint256 id, string memory hash) public onlyOwner {
+        require(bytes(alerts[id].hash).length == 0, "Alert ID already logged");
+        alerts[id] = Alert(msg.sender, hash);
+        ids.push(id);
+        emit AlertLogged(id, msg.sender, hash);
     }
 
-    function getAlert(uint256 timestamp) public view returns (address, string memory, uint256) {
-        require(alerts[timestamp].timestamp != 0, "No alert at this timestamp");
-        Alert memory alert = alerts[timestamp];
-        return (alert.sender, alert.message, alert.timestamp);
+    function getAlert(uint256 id) public view returns (address, string memory) {
+        Alert memory a = alerts[id];
+        return (a.sender, a.hash);
     }
 
-    function getAllTimestamps() public view returns (uint256[] memory) {
-        return timestamps;
-    }
-
-    function getAlertCount() public view returns (uint256) {
-        return timestamps.length;
+    function getAllIds() public view returns (uint256[] memory) {
+        return ids;
     }
 }

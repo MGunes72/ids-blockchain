@@ -10,6 +10,7 @@ import (
 	"math/big"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -57,38 +58,40 @@ func main() {
 	}
 	defer db.Close()
 
-	// Input timestamp
-	fmt.Print("Enter timestamp to verify (UNIX): ")
-	var tsInput uint64
-	fmt.Scan(&tsInput)
+	// Input alert ID (not timestamp!)
+	fmt.Print("Enter alert ID to verify: ")
+	var idInput int
+	fmt.Scan(&idInput)
 
-	if err := verifyAlert(db, contract, tsInput); err != nil {
+	if err := verifyAlert(db, contract, idInput); err != nil {
 		log.Println(err)
 	}
 }
 
-func verifyAlert(db *sql.DB, contract *snortlogger.Snortlogger, timestamp uint64) error {
+func verifyAlert(db *sql.DB, contract *snortlogger.Snortlogger, id int) error {
 	ctx := context.Background()
 
+	var ts time.Time
 	var alertText string
 	err := db.QueryRow(`
-		SELECT alert_text FROM snort_alerts
-		WHERE EXTRACT(EPOCH FROM timestamp)::bigint = $1
-	`, timestamp).Scan(&alertText)
+		SELECT timestamp, alert_text FROM snort_alerts
+		WHERE id = $1
+	`, id).Scan(&ts, &alertText)
 	if err != nil {
 		return fmt.Errorf("❌ PostgreSQL alert not found: %w", err)
 	}
 
-	localHash := sha256.Sum256([]byte(alertText))
+	data := fmt.Sprintf("%d|%s", ts.Unix(), alertText)
+	localHash := sha256.Sum256([]byte(data))
 	localHashHex := hex.EncodeToString(localHash[:])
 
-	sender, alertHash, _, err := contract.GetAlert(&bind.CallOpts{Context: ctx}, big.NewInt(int64(timestamp)))
+	sender, alertHash, err := contract.GetAlert(&bind.CallOpts{Context: ctx}, big.NewInt(int64(id)))
 	if err != nil {
 		return fmt.Errorf("❌ Failed to read from contract: %w", err)
 	}
 
 	fmt.Printf("👨‍💼 Sender: %s\n", sender.Hex())
-	fmt.Printf("🔍 Verifying timestamp: %d\n", timestamp)
+	fmt.Printf("🔍 Verifying alert ID: %d\n", id)
 	fmt.Printf("📝 PostgreSQL hash: %s\n", localHashHex)
 	fmt.Printf("🧾 On-chain hash:     %s\n", alertHash)
 
