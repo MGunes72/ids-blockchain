@@ -33,12 +33,13 @@ func main() {
 	privateKeyHex := os.Getenv("PRIVATE_KEY")
 
 	dbHost := os.Getenv("DB_HOST")
-	dbPort, _ := strconv.Atoi(os.Getenv("DB_PORT"))
+	dbPort := os.Getenv("DB_PORT")
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
 	dbName := os.Getenv("DB_NAME")
 
-	// Connect to Ethereum
+	port, _ := strconv.Atoi(dbPort)
+
 	client, err := ethclient.Dial(rpcURL)
 	if err != nil {
 		log.Fatal(err)
@@ -50,7 +51,6 @@ func main() {
 	}
 
 	fromAddress := crypto.PubkeyToAddress(privateKey.PublicKey)
-
 	chainID, err := client.ChainID(context.Background())
 	if err != nil {
 		log.Fatal(err)
@@ -61,9 +61,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Connect to PostgreSQL
 	connStr := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		dbHost, dbPort, dbUser, dbPassword, dbName)
+		dbHost, port, dbUser, dbPassword, dbName)
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
 		log.Fatalf("PostgreSQL connection failed: %v", err)
@@ -71,7 +70,6 @@ func main() {
 	defer db.Close()
 
 	lastSeenID := 0
-
 	fmt.Println("✅ Monitoring database for new Snort alerts...")
 
 	for {
@@ -96,9 +94,10 @@ func main() {
 
 			lastSeenID = id
 
-			hash := sha256.Sum256([]byte(alert))
+			data := fmt.Sprintf("%d|%s", ts.Unix(), alert)
+			hash := sha256.Sum256([]byte(data))
 			hashStr := hex.EncodeToString(hash[:])
-			fmt.Printf("[→] Sending alert %d (timestamp %d): %s\n", id, ts.Unix(), hashStr)
+			fmt.Printf("[→] Sending alert ID %d: %s\n", id, hashStr)
 
 			auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
 			if err != nil {
@@ -112,14 +111,14 @@ func main() {
 			auth.GasLimit = uint64(300000)
 			auth.GasPrice = gasPrice
 
-			tx, err := contract.LogAlert(auth, big.NewInt(ts.Unix()), hashStr)
+			tx, err := contract.LogAlert(auth, big.NewInt(int64(id)), hashStr)
 			if err != nil {
 				log.Printf("❌ Failed to send alert %d: %v", id, err)
 			} else {
 				log.Printf("✅ Alert %d written to blockchain. TX: %s", id, tx.Hash().Hex())
 			}
 
-			time.Sleep(3 * time.Second) // Prevent nonce issues
+			time.Sleep(3 * time.Second)
 		}
 
 		rows.Close()

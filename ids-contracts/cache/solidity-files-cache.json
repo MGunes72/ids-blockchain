@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/ben/Coding/ids-blockchain/ids-contracts/contracts/SnortLogger.sol": {
-      "lastModificationDate": 1747683995940,
-      "contentHash": "ffc4131797a0928090a4f9549fe7cd14",
+      "lastModificationDate": 1747734622654,
+      "contentHash": "1b162bdedc1e2a56be1d4fe801534586",
       "sourceName": "contracts/SnortLogger.sol",
       "solcConfig": {
         "version": "0.8.20",
